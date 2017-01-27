@@ -85,3 +85,18 @@ test('hasAllKeys: null/undefined', t => {
     t.false(csUtils.hasAllKeys(testObject, 'a.b'));
     t.false(csUtils.hasAllKeys(testObject, 'a.c'));
 });
+
+test('isDefined: for null/undefined', t => {
+    t.false(csUtils.isDefined(null));
+    t.false(csUtils.isDefined(undefined));
+
+    let hello;
+    t.false(csUtils.isDefined(hello));
+});
+
+test('isDefined: for values', t => {
+    t.true(csUtils.isDefined(123));
+    t.true(csUtils.isDefined("123"));
+    t.true(csUtils.isDefined({}));
+    t.true(csUtils.isDefined([]));
+});

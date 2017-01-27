@@ -1,11 +1,17 @@
 'use strict';
 
+const _ = require('lodash');
+
 module.exports.expandUserPath = function(path) {
     if (!path || path.indexOf('~') !== 0) {
         return path;
     }
 
     return path.replace('~', process.env.HOME);
+}
+
+module.exports.isDefined = function(x) {
+    return x !== null && x !== undefined;
 }
 
 module.exports.hasAllKeys = function(object, ...keys) {
@@ -26,7 +32,7 @@ module.exports.hasAllKeys = function(object, ...keys) {
         for(let y = 0, size_y = parts.length; y < size_y; y++) {
             const part = parts[y];
 
-            if (temp[part] === null || temp[part] === undefined) {
+            if (!module.exports.isDefined(temp[part])) {
                 result = false;
                 break keys;
             }
@@ -36,4 +42,22 @@ module.exports.hasAllKeys = function(object, ...keys) {
     }
 
     return result;
+
 }
+
+module.exports.ifAcceptableResponseFn = function(onError, isAcceptable) {
+    isAcceptable = isAcceptable || _.constant(true);
+
+    return (cb, options) => {
+        return (err, res) => {
+            if(err || !isAcceptable(res)) {
+                onError(err, res, options);
+            } else {
+                cb(res, options);
+            }
+        }
+    }
+}
+
+
+
