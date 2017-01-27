@@ -31,3 +31,57 @@ test('expandUserPath: should return null or undefined if that is passed in', t =
     resultPath = csUtils.expandUserPath(testPathUndf);
     t.is(resultPath, testPathUndf);
 });
+
+test('hasAllKeys: should return true with single level', t => {
+    const testObject = {
+        a: 'valueA',
+        b: 'valueB'
+    };
+
+    t.true(csUtils.hasAllKeys(testObject, 'a'));
+    t.true(csUtils.hasAllKeys(testObject, 'b'));
+    t.true(csUtils.hasAllKeys(testObject, ['a', 'b']));
+    t.true(csUtils.hasAllKeys(testObject, 'a', 'b'))
+});
+
+test('hasAllKeys: nested level test', t => {
+    const testObject = {
+        a: {
+            b: 'valueAB',
+            c: 'valueAC'
+        },
+        b: 'valueB'
+    };
+
+    t.true(csUtils.hasAllKeys(testObject, 'a'));
+    t.true(csUtils.hasAllKeys(testObject, 'a.b'));
+    t.true(csUtils.hasAllKeys(testObject, 'a.c'));
+    t.true(csUtils.hasAllKeys(testObject, 'b'));
+    t.true(csUtils.hasAllKeys(testObject, 'a', 'b', 'a.b', 'a.c'));
+});
+
+test('hasAllKeys: unknown key passed', t => {
+    const testObject = {
+        a: {
+            b: 'valueAB',
+            c: 'valueAC'
+        },
+        b: 'valueB'
+    };
+
+    t.false(csUtils.hasAllKeys(testObject, 'bad'));
+    t.false(csUtils.hasAllKeys(testObject, 'a.bad'));
+    t.false(csUtils.hasAllKeys(testObject, 'a.b.bad'));
+});
+
+test('hasAllKeys: null/undefined', t => {
+    const testObject = {
+        a: {
+            b: null,
+            c: undefined
+        }
+    };
+
+    t.false(csUtils.hasAllKeys(testObject, 'a.b'));
+    t.false(csUtils.hasAllKeys(testObject, 'a.c'));
+});
