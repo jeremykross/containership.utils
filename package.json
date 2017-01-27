@@ -1,0 +1,15 @@
+{
+  "name": "containership.utils",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:containership/containership.utils",
+  "author": "Nicholas Tate <ntate22@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "ava"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "ava": "^0.17.0"
+  }
+}
