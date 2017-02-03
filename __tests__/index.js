@@ -100,3 +100,65 @@ test('isDefined: for values', t => {
     t.true(csUtils.isDefined({}));
     t.true(csUtils.isDefined([]));
 });
+
+(() => {
+
+    const errorHandler = (err, res, options) => {
+        return `I received an err ${err} or an unacceptable response ${res} with options ${options}.`;
+    };
+
+    const callback = (res, options) => {
+        return `I received a successful response ${res} with options ${options}.`;
+    };
+
+
+    test('ifAcceptableResponseFn: accepts all by default', t => {
+
+        const acceptAllNonErrorResponses = csUtils.ifAcceptableResponseFn(errorHandler)(callback);
+
+        t.is(
+            acceptAllNonErrorResponses(null, 2),
+            callback(2));
+        t.is(
+            acceptAllNonErrorResponses(null, 3),
+            callback(3));
+        t.is(
+            acceptAllNonErrorResponses(new Error("ERROR"), 1),
+            errorHandler(new Error("ERROR"), 1));
+    });
+
+
+    test('ifAcceptableResponseFn: handles even responses correctly (with options)', t => {
+
+        const acceptEvenResponses = csUtils.ifAcceptableResponseFn(errorHandler, (res) => {
+            return res % 2 == 0;
+        })(callback, "FOO");
+
+        t.is(
+            acceptEvenResponses(null, 2),
+            callback(2, "FOO"));
+        t.is(
+            acceptEvenResponses(null, 3),
+            errorHandler(null, 3, "FOO"));
+        t.is(
+            acceptEvenResponses(new Error("ERROR"), 2),
+            errorHandler(new Error("ERROR"), 2, "FOO"));
+    });
+
+    test('ifAcceptableResponseFn: handles odd responses correctly', t => {
+        const acceptOddResponses = csUtils.ifAcceptableResponseFn(errorHandler, (res) => {
+            return res % 2 != 0;
+        })(callback);
+
+        t.is(
+            acceptOddResponses(null, 2),
+            errorHandler(null, 2));
+        t.is(
+            acceptOddResponses(null, 3),
+            callback(3));
+        t.is(
+            acceptOddResponses(new Error("ERROR"), 1),
+            errorHandler(new Error("ERROR"), 1));
+    });
+
+})();

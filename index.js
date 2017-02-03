@@ -51,9 +51,9 @@ module.exports.ifAcceptableResponseFn = function(onError, isAcceptable) {
     return (cb, options) => {
         return (err, res) => {
             if(err || !isAcceptable(res)) {
-                onError(err, res, options);
+                return onError(err, res, options);
             } else {
-                cb(res, options);
+                return cb(res, options);
             }
         }
     }
